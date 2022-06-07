@@ -1,55 +1,53 @@
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
-const Body = Matter.Body;
+const Constraint = Matter.Constraint;
 
-var ball,groundObj,leftSide,rightSide;
-var world;
-var radius = 40;
+var engine, world;
+var canvas;
+var player, playerBase;
+
+
+
+function preload() {
+  backgroundImg = loadImage("./assets/background.png");
+  baseimage = loadImage("./assets/base.png");
+  playerimage = loadImage("./assets/player.png");
+}
 
 function setup() {
-	createCanvas(1600, 700);
-	rectMode(CENTER);
+  canvas = createCanvas(windowWidth, windowHeight);
 
-	engine = Engine.create();
-	world = engine.world;
+  engine = Engine.create();
+  world = engine.world;
 
-	var ball_options={
-		isStatic:false,
-		restitution:0.3,
-		friction:0,
-		density:1.2
-	}
+  angleMode(DEGREES);
 
-	ball = Bodies.circle(260,100,radius/2,ball_options);
-	World.add(world,ball);
+  var options = {
+    isStatic: true
+  };
 
-	groundObj=new ground(width/2,670,width,20);
-	leftSide = new ground(1100,600,20,120);
-	rightSide = new ground(1350,600,20,120);
+  playerBase = Bodies.rectangle(200, 350, 180, 150, options);
+  World.add(world, playerBase);
 
-	Engine.run(engine);
-  
+  player = Bodies.rectangle(250, playerBase.position.y - 160, 50, 180, options);
+  World.add(world,player)
 }
-
 
 function draw() {
-  rectMode(CENTER);
-  background(0);
+  background(backgroundImg);
 
+  Engine.update(engine);
+  image(baseimage,playerBase.position.x,playerBase.position.y,180,150)
+  image(playerimage,player.position.x,player.position.y,50,180)
 
-  ellipse(ball.position.x,ball.position.y,radius,radius);
-
-  groundObj.display();
-  leftSide.display();  
-  rightSide.display();
-  
+  // Título
+  fill("#FFFF");
+  textAlign("center");
+  textSize(40);
+  text("ARQUEIRO ÉPICO", width / 2, 100);
 }
 
-function keyPressed() {
-  	if (keyCode === UP_ARROW) {
 
-		Matter.Body.applyForce(ball,ball.position,{x:85,y:-85});
-    
-  	}
-}
+
+
